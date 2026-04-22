@@ -45,7 +45,7 @@ class UserController extends Controller
             'role' => 'sometimes|in:admin,client,mechanic',
         ]);
 
-        $user->update($request->only(['name', 'email', 'role']));
+        $user->update($request->only(['name', 'email', 'role', 'is_active']));
 
         return response()->json($user);
     }
@@ -65,5 +65,14 @@ class UserController extends Controller
     public function clients()
     {
         return response()->json(User::where('role', 'client')->get());
+    }
+
+    public function toggleActive(User $user)
+    {
+        $user->update(['is_active' => !$user->is_active]);
+        return response()->json([
+            'message' => $user->is_active ? 'User activated' : 'User deactivated',
+            'user' => $user
+        ]);
     }
 }

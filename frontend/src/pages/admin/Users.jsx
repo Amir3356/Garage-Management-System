@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
 import Loader from '../../components/Loader';
-import { Plus, Trash2, Edit2, User, Wrench, Shield } from 'lucide-react';
+import { Plus, Trash2, Edit2, User, Wrench, Shield, Power, PowerOff } from 'lucide-react';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -85,6 +85,15 @@ const Users = () => {
     }
   };
 
+  const handleToggleActive = async (user) => {
+    try {
+      await api.patch(`/users/${user.id}/toggle-active`);
+      fetchUsers();
+    } catch (error) {
+      alert('Error updating user status');
+    }
+  };
+
   const getRoleIcon = (role) => {
     switch (role) {
       case 'admin':
@@ -140,6 +149,9 @@ const Users = () => {
                   Role
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  Status
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                   Created
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
@@ -162,11 +174,39 @@ const Users = () => {
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500">{user.email}</td>
                   <td className="px-6 py-4">{getRoleBadge(user.role)}</td>
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full ${
+                      user.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                    }`}>
+                      {user.is_active ? (
+                        <>
+                          <Power className="w-3 h-3" />
+                          Active
+                        </>
+                      ) : (
+                        <>
+                          <PowerOff className="w-3 h-3" />
+                          Inactive
+                        </>
+                      )}
+                    </span>
+                  </td>
                   <td className="px-6 py-4 text-sm text-gray-500">
                     {new Date(user.created_at).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => handleToggleActive(user)}
+                        className={`p-2 rounded-lg transition-colors ${
+                          user.is_active
+                            ? 'text-green-600 hover:bg-green-50'
+                            : 'text-red-600 hover:bg-red-50'
+                        }`}
+                        title={user.is_active ? 'Deactivate User' : 'Activate User'}
+                      >
+                        {user.is_active ? <Power className="w-4 h-4" /> : <PowerOff className="w-4 h-4" />}
+                      </button>
                       <button
                         onClick={() => handleEdit(user)}
                         className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
