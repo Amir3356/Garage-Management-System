@@ -64,14 +64,9 @@ const Login = () => {
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="block text-sm font-medium text-gray-700">
-                  Password
-                </label>
-                <Link to="/forgot-password" className="text-sm text-blue-600 hover:underline">
-                  Forgot Password?
-                </Link>
-              </div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Password
+              </label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -107,12 +102,7 @@ const Login = () => {
             </button>
           </form>
 
-          <div className="mt-6 text-center space-y-2">
-            <p className="text-sm text-gray-500">
-              <Link to="/forgot-username" className="text-blue-600 font-medium hover:underline">
-                Forgot Username?
-              </Link>
-            </p>
+          <div className="mt-6 text-center">
             <p className="text-sm text-gray-500">
               Don't have an account?{' '}
               <Link to="/register" className="text-blue-600 font-medium hover:underline">
