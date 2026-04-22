@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/users', [UserController::class, 'store']);
     Route::put('/users/{user}', [UserController::class, 'update']);
     Route::delete('/users/{user}', [UserController::class, 'destroy']);
+    Route::patch('/users/{user}/toggle-active', [UserController::class, 'toggleActive']);
 
     Route::get('/vehicles', [VehicleController::class, 'index']);
     Route::get('/vehicles/{vehicle}', [VehicleController::class, 'show']);
