@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
 import Loader from '../../components/Loader';
-import { Calendar, Clock, Wrench, CheckCircle, Sparkles, Shield, Zap, Settings } from 'lucide-react';
+import { Calendar, Clock, Wrench, CheckCircle, Sparkles, Shield, Zap, Settings, Eye, X, Info } from 'lucide-react';
 
 const BookService = () => {
   const [vehicles, setVehicles] = useState([]);
@@ -9,6 +9,7 @@ const BookService = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
   const [formData, setFormData] = useState({
     vehicle_id: '',
     service_id: '',
@@ -161,17 +162,35 @@ const BookService = () => {
                           {service.description}
                         </p>
 
-                        {/* Price and Duration */}
-                        <div className="flex items-center gap-3">
-                          <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-sm font-bold ${colorClasses.bg} ${colorClasses.text}`}>
-                            ${service.price}
-                          </span>
-                          {service.duration_minutes && (
-                            <span className="inline-flex items-center gap-1 text-xs text-gray-400">
-                              <Clock className="w-3.5 h-3.5" />
-                              {service.duration_minutes} min
+                        {/* Price, Duration & View Details */}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-sm font-bold ${colorClasses.bg} ${colorClasses.text}`}>
+                              ${service.price}
                             </span>
-                          )}
+                            {service.duration_minutes && (
+                              <span className="inline-flex items-center gap-1 text-xs text-gray-400">
+                                <Clock className="w-3.5 h-3.5" />
+                                {service.duration_minutes} min
+                              </span>
+                            )}
+                          </div>
+                          {/* View Details Button */}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedService(service);
+                            }}
+                            className={`flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-lg transition-colors ${
+                              isSelected
+                                ? `${colorClasses.text} ${colorClasses.bg} hover:opacity-80`
+                                : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                            }`}
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                            View Details
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -225,6 +244,82 @@ const BookService = () => {
           </button>
         </form>
       </div>
+
+      {/* Service Details Modal */}
+      {selectedService && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 animate-fade-in">
+          <div className="bg-white rounded-2xl w-full max-w-lg p-6 animate-fade-in shadow-2xl">
+            {/* Header */}
+            <div className="flex items-start justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
+                  <Info className="w-6 h-6 text-blue-600" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">{selectedService.name}</h2>
+                  <p className="text-sm text-gray-500">Service Details</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedService(null)}
+                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="space-y-5">
+              {/* Description */}
+              <div className="bg-gray-50 rounded-xl p-4">
+                <h3 className="text-sm font-semibold text-gray-700 mb-2">Description</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  {selectedService.description || 'No description available.'}
+                </p>
+              </div>
+
+              {/* Price & Duration */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-blue-50 rounded-xl p-4">
+                  <h3 className="text-sm font-semibold text-blue-700 mb-1">Price</h3>
+                  <p className="text-2xl font-bold text-blue-600">${selectedService.price}</p>
+                </div>
+                <div className="bg-amber-50 rounded-xl p-4">
+                  <h3 className="text-sm font-semibold text-amber-700 mb-1">Duration</h3>
+                  <p className="text-2xl font-bold text-amber-600">
+                    {selectedService.duration_minutes ? `${selectedService.duration_minutes} min` : 'N/A'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Service ID */}
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-gray-500">Service ID</span>
+                <span className="font-mono text-gray-700 bg-gray-100 px-2 py-1 rounded">#{selectedService.id}</span>
+              </div>
+            </div>
+
+            {/* Footer Actions */}
+            <div className="flex gap-3 mt-6 pt-4 border-t border-gray-100">
+              <button
+                onClick={() => setSelectedService(null)}
+                className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-colors"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  setFormData({ ...formData, service_id: selectedService.id });
+                  setSelectedService(null);
+                }}
+                className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors"
+              >
+                Select This Service
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
