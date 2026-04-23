@@ -24,10 +24,10 @@ const Jobs = () => {
 
   const fetchJobs = async () => {
     try {
-      const response = await api.get('/bookings');
+      const response = await api.get('/appointments');
       setJobs(response.data);
     } catch (error) {
-      console.error('Error fetching jobs:', error);
+      console.error('Error fetching appointments:', error);
     } finally {
       setLoading(false);
     }
@@ -35,7 +35,7 @@ const Jobs = () => {
 
   const handleStatusUpdate = async (jobId, status) => {
     try {
-      await api.put(`/bookings/${jobId}`, { status, notes: notes || undefined });
+      await api.put(`/appointments/${jobId}`, { status, notes: notes || undefined });
       setSelectedJob(null);
       setNotes('');
       fetchJobs();

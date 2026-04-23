@@ -21,22 +21,22 @@ const AdminDashboard = () => {
   });
   const [users, setUsers] = useState(0);
   const [vehicles, setVehicles] = useState(0);
-  const [recentBookings, setRecentBookings] = useState([]);
+  const [recentAppointments, setRecentAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [statsRes, usersRes, vehiclesRes, bookingsRes] = await Promise.all([
-          api.get('/bookings/stats'),
+        const [statsRes, usersRes, vehiclesRes, appointmentsRes] = await Promise.all([
+          api.get('/appointments/stats'),
           api.get('/users'),
           api.get('/vehicles'),
-          api.get('/bookings'),
+          api.get('/appointments'),
         ]);
         setStats(statsRes.data);
         setUsers(usersRes.data.length);
         setVehicles(vehiclesRes.data.length);
-        setRecentBookings(bookingsRes.data.slice(0, 5));
+        setRecentAppointments(appointmentsRes.data.slice(0, 5));
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
       } finally {
@@ -77,7 +77,7 @@ const AdminDashboard = () => {
             </span>
           </div>
           <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
-          <p className="text-sm text-gray-500">Total Bookings</p>
+          <p className="text-sm text-gray-500">Total Appointments</p>
         </div>
 
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 card-hover">
@@ -90,7 +90,7 @@ const AdminDashboard = () => {
             </span>
           </div>
           <p className="text-2xl font-bold text-gray-900">{stats.pending}</p>
-          <p className="text-sm text-gray-500">Pending Bookings</p>
+          <p className="text-sm text-gray-500">Pending Appointments</p>
         </div>
 
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 card-hover">
@@ -145,10 +145,10 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Recent Bookings */}
+      {/* Recent Appointments */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="p-6 border-b border-gray-100">
-          <h2 className="text-lg font-semibold text-gray-900">Recent Bookings</h2>
+          <h2 className="text-lg font-semibold text-gray-900">Recent Appointments</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -172,36 +172,36 @@ const AdminDashboard = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {recentBookings.map((booking) => (
-                <tr key={booking.id} className="hover:bg-gray-50">
+              {recentAppointments.map((appointment) => (
+                <tr key={appointment.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4">
-                    <p className="text-sm font-medium text-gray-900">{booking.user?.name}</p>
-                    <p className="text-xs text-gray-500">{booking.user?.email}</p>
+                    <p className="text-sm font-medium text-gray-900">{appointment.user?.name}</p>
+                    <p className="text-xs text-gray-500">{appointment.user?.email}</p>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">{booking.service?.name}</td>
+                  <td className="px-6 py-4 text-sm text-gray-900">{appointment.service?.name}</td>
                   <td className="px-6 py-4 text-sm text-gray-500">
-                    {booking.vehicle?.car_name}
+                    {appointment.vehicle?.car_name}
                   </td>
                   <td className="px-6 py-4">
                     <span
                       className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(
-                        booking.status
+                        appointment.status
                       )}`}
                     >
-                      {booking.status.replace('_', ' ')}
+                      {appointment.status.replace('_', ' ')}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500">
-                    {booking.mechanic?.name || (
+                    {appointment.mechanic?.name || (
                       <span className="text-yellow-600">Not assigned</span>
                     )}
                   </td>
                 </tr>
               ))}
-              {recentBookings.length === 0 && (
+              {recentAppointments.length === 0 && (
                 <tr>
                   <td colSpan="5" className="px-6 py-8 text-center text-gray-500">
-                    No bookings yet
+                    No appointments yet
                   </td>
                 </tr>
               )}

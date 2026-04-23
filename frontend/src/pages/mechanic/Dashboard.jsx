@@ -16,7 +16,7 @@ const MechanicDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get('/bookings');
+        const response = await api.get('/appointments');
         const jobs = response.data;
         setStats({
           total: jobs.length,
@@ -26,7 +26,7 @@ const MechanicDashboard = () => {
         });
         setRecentJobs(jobs.slice(0, 5));
       } catch (error) {
-        console.error('Error fetching jobs:', error);
+        console.error('Error fetching appointments:', error);
       } finally {
         setLoading(false);
       }
