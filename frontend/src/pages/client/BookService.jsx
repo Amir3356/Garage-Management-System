@@ -251,36 +251,7 @@ const BookService = () => {
                     className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-blue-200 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all bg-white"
                   />
                 </div>
-                <p className="text-xs text-gray-500 mt-1.5">Business hours: 8:00 AM - 5:00 PM</p>
               </div>
-            </div>
-
-            {/* Quick Date Selection */}
-            <div className="mt-4 flex flex-wrap gap-2">
-              <span className="text-xs text-gray-500 self-center mr-1">Quick select:</span>
-              {['Today', 'Tomorrow', 'Next Week'].map((label, i) => {
-                const dates = [
-                  new Date(),
-                  new Date(Date.now() + 86400000),
-                  new Date(Date.now() + 7 * 86400000)
-                ];
-                const dateStr = dates[i].toISOString().split('T')[0];
-                return (
-                  <button
-                    key={label}
-                    type="button"
-                    onClick={() => {
-                      const time = formData.scheduled_date && formData.scheduled_date.includes('T')
-                        ? formData.scheduled_date.split('T')[1]
-                        : '09:00:00';
-                      setFormData({ ...formData, scheduled_date: `${dateStr}T${time}` });
-                    }}
-                    className="px-3 py-1.5 text-xs font-medium bg-white border border-blue-200 text-blue-600 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors"
-                  >
-                    {label}
-                  </button>
-                );
-              })}
             </div>
           </div>
 
