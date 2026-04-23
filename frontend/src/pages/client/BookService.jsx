@@ -39,7 +39,7 @@ const BookService = () => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await api.post('/bookings', formData);
+      await api.post('/appointments', formData);
       setSuccess(true);
       setFormData({ vehicle_id: '', service_id: '', scheduled_date: '', notes: '' });
       setTimeout(() => setSuccess(false), 3000);
@@ -176,10 +176,10 @@ const BookService = () => {
             {submitting ? (
               <>
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Booking...
+                Scheduling...
               </>
             ) : (
-              'Book Service'
+              'Schedule Appointment'
             )}
           </button>
         </form>

@@ -29,7 +29,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
     { to: '/users', icon: Users, label: 'Users' },
     { to: '/services', icon: Settings, label: 'Services' },
-    { to: '/bookings', icon: ClipboardList, label: 'Bookings' },
+    { to: '/appointments', icon: ClipboardList, label: 'Appointments' },
   ];
 
   const mechanicLinks = [
