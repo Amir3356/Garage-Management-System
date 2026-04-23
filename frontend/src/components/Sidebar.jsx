@@ -23,7 +23,7 @@ const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }) => {
   const clientLinks = [
     { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
     { to: '/vehicles', icon: Car, label: 'My Vehicles' },
-    { to: '/book-service', icon: Calendar, label: 'Book Service' },
+    { to: '/book-service', icon: Calendar, label: 'Appointment' },
     { to: '/history', icon: History, label: 'History' },
   ];
 
