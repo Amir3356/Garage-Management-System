@@ -200,18 +200,100 @@ const BookService = () => {
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Preferred Date (Optional)
-            </label>
-            <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="datetime-local"
-                value={formData.scheduled_date}
-                onChange={(e) => setFormData({ ...formData, scheduled_date: e.target.value })}
-                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-              />
+          {/* Schedule Date & Time */}
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
+                <Calendar className="w-4 h-4 text-white" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-900">
+                  Schedule Appointment Date & Time
+                </label>
+                <p className="text-xs text-gray-500">Choose when you want to bring your vehicle</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Date Input */}
+              <div className="relative">
+                <label className="block text-xs font-medium text-gray-600 mb-1.5">Date</label>
+                <input
+                  type="date"
+                  required
+                  min={new Date().toISOString().split('T')[0]}
+                  value={formData.scheduled_date ? formData.scheduled_date.split('T')[0] : ''}
+                  onChange={(e) => {
+                    const date = e.target.value;
+                    const time = formData.scheduled_date ? formData.scheduled_date.split('T')[1] : '09:00';
+                    setFormData({ ...formData, scheduled_date: `${date}T${time}` });
+                  }}
+                  className="w-full px-4 py-3 rounded-xl border-2 border-blue-200 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all bg-white"
+                />
+              </div>
+
+              {/* Time Input */}
+              <div className="relative">
+                <label className="block text-xs font-medium text-gray-600 mb-1.5">Time</label>
+                <div className="relative">
+                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400" />
+                  <select
+                    required
+                    value={formData.scheduled_date ? formData.scheduled_date.split('T')[1]?.substring(0,5) : '09:00'}
+                    onChange={(e) => {
+                      const time = e.target.value;
+                      const date = formData.scheduled_date ? formData.scheduled_date.split('T')[0] : new Date().toISOString().split('T')[0];
+                      setFormData({ ...formData, scheduled_date: `${date}T${time}:00` });
+                    }}
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-blue-200 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all bg-white appearance-none cursor-pointer"
+                  >
+                    <option value="">Select time</option>
+                    <optgroup label="Morning">
+                      <option value="08:00">8:00 AM</option>
+                      <option value="09:00">9:00 AM</option>
+                      <option value="10:00">10:00 AM</option>
+                      <option value="11:00">11:00 AM</option>
+                    </optgroup>
+                    <optgroup label="Afternoon">
+                      <option value="13:00">1:00 PM</option>
+                      <option value="14:00">2:00 PM</option>
+                      <option value="15:00">3:00 PM</option>
+                      <option value="16:00">4:00 PM</option>
+                    </optgroup>
+                  </select>
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Date Selection */}
+            <div className="mt-4 flex flex-wrap gap-2">
+              <span className="text-xs text-gray-500 self-center mr-1">Quick select:</span>
+              {['Today', 'Tomorrow', 'Next Week'].map((label, i) => {
+                const dates = [
+                  new Date(),
+                  new Date(Date.now() + 86400000),
+                  new Date(Date.now() + 7 * 86400000)
+                ];
+                const dateStr = dates[i].toISOString().split('T')[0];
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => {
+                      const time = formData.scheduled_date ? formData.scheduled_date.split('T')[1] || '09:00:00' : '09:00:00';
+                      setFormData({ ...formData, scheduled_date: `${dateStr}T${time}` });
+                    }}
+                    className="px-3 py-1.5 text-xs font-medium bg-white border border-blue-200 text-blue-600 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                  >
+                    {label}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -230,7 +312,7 @@ const BookService = () => {
 
           <button
             type="submit"
-            disabled={submitting || !formData.vehicle_id || !formData.service_id}
+            disabled={submitting || !formData.vehicle_id || !formData.service_id || !formData.scheduled_date}
             className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 focus:ring-4 focus:ring-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
           >
             {submitting ? (
