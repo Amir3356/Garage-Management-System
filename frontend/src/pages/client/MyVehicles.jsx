@@ -220,6 +220,7 @@ const MyVehicles = () => {
           </div>
         </div>
       )}
+      <ChatBot />
     </div>
   );
 };
