@@ -140,7 +140,6 @@ const History = () => {
           </table>
         </div>
       </div>
-      <ChatBot />
     </div>
   );
 };
