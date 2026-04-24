@@ -20,35 +20,68 @@ const ChatBot = () => {
     scrollToBottom();
   }, [messages]);
 
-  // Fallback response generator for when API fails
+  // Smart fallback response generator
   const generateFallbackResponse = (userInput) => {
     const input = userInput.toLowerCase();
     
-    if (input.includes('appointment') || input.includes('schedule') || input.includes('book')) {
-      return "To schedule an appointment, go to the Appointment page, select your vehicle, choose a service, and pick your preferred date and time.";
+    // Greetings
+    if (input.match(/^(hi|hello|hey|good morning|good afternoon|good evening|howdy)/)) {
+      return "Hello! Welcome to our Garage Management System. How can I assist you today? 😊";
     }
-    if (input.includes('vehicle') || input.includes('car') || input.includes('add')) {
-      return "You can manage your vehicles in the 'My Vehicles' section. Click 'Add Vehicle' to register a new car.";
+    
+    // Appointment/Booking related
+    if (input.includes('appointment') || input.includes('schedule') || input.includes('book') || input.includes('reserve')) {
+      return "To schedule an appointment:\n1. Go to 'Appointment' page\n2. Select your vehicle\n3. Choose a service type\n4. Pick date and time\n5. Submit your request\n\nYou'll get confirmation once the admin reviews it.";
     }
-    if (input.includes('service') || input.includes('price') || input.includes('cost')) {
-      return "We offer various services including maintenance, repairs, and inspections. Prices are shown when you select a service during booking.";
+    
+    // Vehicle related
+    if (input.includes('vehicle') || input.includes('car') || input.includes('truck') || input.includes('motorcycle')) {
+      if (input.includes('add') || input.includes('new') || input.includes('register')) {
+        return "To add a new vehicle:\n1. Go to 'My Vehicles' page\n2. Click 'Add Vehicle' button\n3. Enter vehicle details (name, model, plate number)\n4. Save\n\nYour vehicle will be ready for booking appointments!";
+      }
+      return "You can view and manage all your vehicles in the 'My Vehicles' section. From there, you can add, edit, or remove vehicles from your account.";
     }
-    if (input.includes('status') || input.includes('progress') || input.includes('when')) {
-      return "Check your appointment status in the Dashboard or History page. You'll see if it's pending, in progress, or completed.";
+    
+    // Service related
+    if (input.includes('service') || input.includes('repair') || input.includes('maintenance') || input.includes('fix')) {
+      if (input.includes('price') || input.includes('cost') || input.includes('how much') || input.includes('fee')) {
+        return "Service prices vary based on the type of service. You can see exact prices when you go to the Appointment page and select a service. We offer transparent pricing with no hidden fees!";
+      }
+      return "We offer various services including:\n• Oil change & maintenance\n• Engine repairs\n• Brake services\n• Tire services\n• General inspections\n• And more!\n\nCheck the Appointment page to see all available services.";
     }
-    if (input.includes('hello') || input.includes('hi') || input.includes('hey')) {
-      return "Hello! How can I help you today? I can assist with appointments, vehicles, services, and more.";
+    
+    // Status related
+    if (input.includes('status') || input.includes('progress') || input.includes('done') || input.includes('ready')) {
+      return "To check your appointment status:\n1. Go to 'Dashboard' or 'History' page\n2. View your appointments list\n\nStatus meanings:\n🟡 Pending - Waiting for admin approval\n🔵 In Progress - Being worked on\n🟢 Completed - Finished and ready\n🔴 Cancelled - Appointment cancelled";
     }
-    if (input.includes('help') || input.includes('how')) {
-      return "I'm here to help! I can assist you with:\n• Scheduling appointments\n• Managing vehicles\n• Service information\n• Checking appointment status\nWhat would you like to know?";
+    
+    // Cancel related
+    if (input.includes('cancel') || input.includes('delete') || input.includes('remove') || input.includes('stop')) {
+      return "To cancel an appointment:\n1. Go to 'Dashboard' or 'History'\n2. Find the appointment you want to cancel\n3. Contact the admin for cancellation\n\nNote: Please cancel at least 24 hours before your scheduled time.";
     }
-    if (input.includes('contact') || input.includes('phone') || input.includes('email')) {
-      return "For direct assistance, please contact our garage directly or speak with the admin.";
+    
+    // Help related - only trigger on specific help phrases
+    if (input.match(/\b(help|assist|support)\b/) && !input.includes('computer') && !input.includes('what is') && !input.includes('meaning')) {
+      return "I can help you with:\n\n📅 Scheduling appointments\n🚗 Managing your vehicles\n🔧 Service information\n📊 Checking appointment status\n❌ Cancelling appointments\n\nJust ask me anything about these topics!";
     }
-    if (input.includes('cancel') || input.includes('delete')) {
-      return "To cancel an appointment, please go to your Dashboard or History page and contact the admin for cancellation.";
+    
+    // Contact related
+    if (input.includes('contact') || input.includes('phone') || input.includes('email') || input.includes('call') || input.includes('reach')) {
+      return "For direct assistance:\n• Speak with the garage admin\n• Visit the garage in person\n• Or check your Dashboard for contact information\n\nOur team is ready to help you with any questions!";
     }
-    return "I'm a basic assistant right now. For more detailed help, please contact the garage admin. I can help with basic questions about appointments, vehicles, and services.";
+    
+    // Time/When related
+    if (input.includes('when') || input.includes('time') || input.includes('how long') || input.includes('duration')) {
+      return "Appointment durations depend on the service type:\n• Basic maintenance: 30-60 minutes\n• Oil change: 30-45 minutes\n• Major repairs: 2-4 hours or more\n\nYou'll see estimated duration when booking. Check your Dashboard for specific appointment times.";
+    }
+    
+    // Thank you
+    if (input.includes('thank') || input.includes('thanks')) {
+      return "You're welcome! 😊 I'm happy to help. If you have any other questions, feel free to ask!";
+    }
+    
+    // Default response for non-garage questions
+    return "I'm a garage management assistant, so I'm specialized in helping with:\n• Vehicle appointments & scheduling\n• Car services & repairs\n• Managing your vehicles\n• Appointment status tracking\n\nFor questions about \"" + userInput + "\", I may not be able to help. Please ask me about garage services, vehicles, or appointments instead! 😊";
   };
 
   const handleSend = async () => {
@@ -83,7 +116,7 @@ const ChatBot = () => {
           'X-Title': 'Garage Management System'
         },
         body: JSON.stringify({
-          model: 'google/gemma-2-9b-it:free',
+          model: 'mistralai/mistral-7b-instruct:free',
           messages: [
             {
               role: 'system',
@@ -113,10 +146,10 @@ const ChatBot = () => {
     } catch (error) {
       console.error('Chat error:', error);
       
-      // Show error message to user with details
+      // Use fallback response instead of showing error
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: `API Error: ${error.message}. Falling back to basic assistant mode.`
+        content: generateFallbackResponse(userMessage.content)
       }]);
     } finally {
       setIsLoading(false);
