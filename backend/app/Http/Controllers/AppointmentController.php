@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Appointment;
 use App\Mail\AppointmentScheduled;
+use App\Mail\MechanicAssigned;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -119,7 +120,14 @@ class AppointmentController extends Controller
             'status' => 'in_progress',
         ]);
 
-        return response()->json($appointment->load(['user', 'vehicle', 'service', 'mechanic']));
+        $appointment->load(['user', 'vehicle', 'service', 'mechanic']);
+
+        // Send email notification to mechanic
+        if ($mechanic->email) {
+            Mail::to($mechanic->email)->send(new MechanicAssigned($appointment));
+        }
+
+        return response()->json($appointment);
     }
 
     public function destroy(Request $request, Appointment $appointment)
