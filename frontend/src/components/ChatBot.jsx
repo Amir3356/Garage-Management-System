@@ -72,36 +72,37 @@ const ChatBot = () => {
     }
 
     try {
+      console.log('Using API Key:', API_KEY?.substring(0, 20) + '...');
 
-      const response = await fetch('/openrouter/chat/completions', {
+      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${API_KEY}`,
           'Content-Type': 'application/json',
-          'HTTP-Referer': window.location.origin,
+          'HTTP-Referer': window.location.href,
           'X-Title': 'Garage Management System'
         },
         body: JSON.stringify({
-          model: 'openai/gpt-3.5-turbo',
+          model: 'google/gemma-2-9b-it:free',
           messages: [
             {
               role: 'system',
               content: 'You are a helpful assistant for a Garage Management System. You help clients with vehicle services, appointments, and general garage questions. Keep responses concise and friendly.'
             },
-            ...messages,
+            ...messages.filter(m => m.role !== 'system'),
             userMessage
           ]
         })
       });
 
+      const data = await response.json();
+      console.log('API Response:', data);
+
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error?.message || `HTTP error! status: ${response.status}`);
+        throw new Error(data.error?.message || `HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
-      
-      if (data.choices && data.choices[0]) {
+      if (data.choices && data.choices[0] && data.choices[0].message) {
         setMessages(prev => [...prev, {
           role: 'assistant',
           content: data.choices[0].message.content
@@ -112,10 +113,10 @@ const ChatBot = () => {
     } catch (error) {
       console.error('Chat error:', error);
       
-      // Use fallback response when API fails
+      // Show error message to user with details
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: generateFallbackResponse(userMessage.content)
+        content: `API Error: ${error.message}. Falling back to basic assistant mode.`
       }]);
     } finally {
       setIsLoading(false);
