@@ -11,7 +11,8 @@ import {
   X,
   ClipboardList,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  UserCog
 } from 'lucide-react';
 
 const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }) => {
@@ -32,6 +33,7 @@ const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }) => {
     { to: '/users', icon: Users, label: 'Users' },
     { to: '/services', icon: Settings, label: 'Services' },
     { to: '/appointments', icon: ClipboardList, label: 'Appointments' },
+    { to: '/mechanics', icon: UserCog, label: 'Mechanics' },
   ];
 
   const mechanicLinks = [
