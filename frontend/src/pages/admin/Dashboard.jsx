@@ -16,7 +16,10 @@ const AdminDashboard = () => {
     const fetchData = async () => {
       try {
         const appointmentsRes = await api.get('/appointments');
-        setRecentAppointments(appointmentsRes.data.slice(0, 5));
+        // Handle paginated response
+        const appointmentsData = appointmentsRes.data.data || appointmentsRes.data;
+        const appointments = Array.isArray(appointmentsData) ? appointmentsData : [];
+        setRecentAppointments(appointments.slice(0, 5));
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
       } finally {
