@@ -69,14 +69,14 @@ const History = () => {
                   <SkeletonRow />
                   <SkeletonRow />
                 </>
-              ) : filteredAppointments.length === 0 ? (
+              ) : appointments.length === 0 ? (
                 <tr>
                   <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
                     No appointments found
                   </td>
                 </tr>
               ) : (
-                filteredAppointments.map((appointment) => (
+                appointments.map((appointment) => (
                   <tr key={appointment.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
                       <div>
