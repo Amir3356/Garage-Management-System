@@ -86,8 +86,8 @@ const BookService = () => {
           <CheckCircle className="w-5 h-5" />
           <span>
             {successCount > 1
-              ? `${successCount} services booked successfully!`
-              : 'Service booked successfully!'}
+              ? `${successCount} services appointments successfully!`
+              : 'Service appointment successfully!'}
           </span>
         </div>
       )}
