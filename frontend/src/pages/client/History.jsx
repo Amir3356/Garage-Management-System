@@ -66,9 +66,7 @@ const History = () => {
             <tbody className="divide-y divide-gray-100">
               {loading ? (
                 <tr>
-                  <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
-                    Loading...
-                  </td>
+                  <td colSpan="6" className="px-6 py-8"></td>
                 </tr>
               ) : appointments.length === 0 ? (
                 <tr>

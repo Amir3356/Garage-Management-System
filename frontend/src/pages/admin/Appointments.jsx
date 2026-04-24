@@ -131,7 +131,7 @@ const Appointments = () => {
     }
   };
 
-  if (loading) return <div className="p-6 text-center text-gray-500">Loading...</div>;
+  if (loading) return <div className="p-6"></div>;
 
   return (
     <div className="space-y-6 animate-fade-in">
