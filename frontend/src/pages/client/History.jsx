@@ -5,7 +5,6 @@ import Loader, { SkeletonRow } from '../../components/Loader';
 const History = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -22,11 +21,6 @@ const History = () => {
     fetchAppointments();
   }, []);
 
-  const filteredAppointments = appointments.filter((appointment) => {
-    if (filter === 'all') return true;
-    return appointment.status === filter;
-  });
-
   const getStatusBadge = (status) => {
     const styles = {
       pending: 'bg-yellow-100 text-yellow-700',
@@ -41,21 +35,6 @@ const History = () => {
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-2xl font-bold text-gray-900">Service History</h1>
-        <div className="flex gap-2">
-          {['all', 'pending', 'in_progress', 'completed'].map((status) => (
-            <button
-              key={status}
-              onClick={() => setFilter(status)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                filter === status
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
-              }`}
-            >
-              {status.charAt(0).toUpperCase() + status.slice(1).replace('_', ' ')}
-            </button>
-          ))}
-        </div>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
