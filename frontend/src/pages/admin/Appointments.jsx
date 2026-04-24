@@ -22,8 +22,11 @@ const Appointments = () => {
         api.get('/appointments'),
         api.get('/users/mechanics'),
       ]);
-      setAppointments(appointmentsRes.data);
-      setMechanics(mechanicsRes.data);
+      // Handle paginated response
+      const appointmentsData = appointmentsRes.data.data || appointmentsRes.data;
+      const mechanicsData = mechanicsRes.data.data || mechanicsRes.data;
+      setAppointments(Array.isArray(appointmentsData) ? appointmentsData : []);
+      setMechanics(Array.isArray(mechanicsData) ? mechanicsData : []);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
