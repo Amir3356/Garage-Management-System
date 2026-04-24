@@ -312,7 +312,7 @@ const BookService = () => {
 
           <button
             type="submit"
-            disabled={submitting || !formData.vehicle_id || !formData.service_id || !formData.scheduled_date}
+            disabled={submitting || !formData.vehicle_id || !formData.service_ids?.length || !formData.scheduled_date}
             className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 focus:ring-4 focus:ring-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
           >
             {submitting ? (
