@@ -10,7 +10,9 @@ const History = () => {
     const fetchAppointments = async () => {
       try {
         const response = await api.get('/appointments');
-        setAppointments(response.data);
+        // Handle paginated response
+        const data = response.data.data || response.data;
+        setAppointments(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error('Error fetching appointments:', error);
       } finally {
