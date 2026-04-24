@@ -129,11 +129,10 @@ const BookService = () => {
                 const isSelected = formData.service_id === service.id;
 
                 return (
-                  <button
+                  <div
                     key={service.id}
-                    type="button"
                     onClick={() => setFormData({ ...formData, service_id: service.id })}
-                    className={`group relative p-5 rounded-2xl border-2 text-left transition-all duration-300 ease-out ${
+                    className={`group relative p-5 rounded-2xl border-2 text-left transition-all duration-300 ease-out cursor-pointer ${
                       isSelected
                         ? `${colorClasses.border} ${colorClasses.selectedBg} shadow-lg ring-2 ${colorClasses.ring} ring-offset-2`
                         : `border-gray-200 bg-white hover:shadow-md ${colorClasses.hover}`
@@ -195,7 +194,7 @@ const BookService = () => {
                         </div>
                       </div>
                     </div>
-                  </button>
+                  </div>
                 );
               })}
             </div>
