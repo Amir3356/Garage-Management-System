@@ -69,7 +69,11 @@ class AppointmentController extends Controller
         $appointment->load(['user', 'vehicle', 'service']);
 
         // Send email notification to admin
-        Mail::to('amirsiraj1995@gmail.com')->send(new AppointmentScheduled($appointment));
+        try {
+            Mail::to('amirsiraj1995@gmail.com')->send(new AppointmentScheduled($appointment));
+        } catch (\Exception $e) {
+            \Log::error('Failed to send admin notification: ' . $e->getMessage());
+        }
 
         return response()->json($appointment, 201);
     }
@@ -124,7 +128,11 @@ class AppointmentController extends Controller
 
         // Send email notification to mechanic
         if ($mechanic->email) {
-            Mail::to($mechanic->email)->send(new MechanicAssigned($appointment));
+            try {
+                Mail::to($mechanic->email)->send(new MechanicAssigned($appointment));
+            } catch (\Exception $e) {
+                \Log::error('Failed to send mechanic notification: ' . $e->getMessage());
+            }
         }
 
         return response()->json($appointment);
