@@ -226,8 +226,8 @@ const BookService = () => {
                   value={formData.scheduled_date ? formData.scheduled_date.split('T')[0] : ''}
                   onChange={(e) => {
                     const date = e.target.value;
-                    const time = formData.scheduled_date ? formData.scheduled_date.split('T')[1] : '09:00';
-                    setFormData({ ...formData, scheduled_date: `${date}T${time}` });
+                    const currentTime = formData.scheduled_date?.split('T')[1] || '09:00:00';
+                    setFormData({ ...formData, scheduled_date: `${date}T${currentTime}` });
                   }}
                   className="w-full px-4 py-3 rounded-xl border-2 border-blue-200 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all bg-white"
                 />
@@ -241,13 +241,11 @@ const BookService = () => {
                   <input
                     type="time"
                     required
-                    min="08:00"
-                    max="17:00"
                     value={formData.scheduled_date ? formData.scheduled_date.split('T')[1]?.substring(0,5) : ''}
                     onChange={(e) => {
-                      const time = e.target.value;
-                      const date = formData.scheduled_date ? formData.scheduled_date.split('T')[0] : new Date().toISOString().split('T')[0];
-                      setFormData({ ...formData, scheduled_date: `${date}T${time}:00` });
+                      const time = e.target.value; // format: "HH:MM"
+                      const currentDate = formData.scheduled_date?.split('T')[0] || new Date().toISOString().split('T')[0];
+                      setFormData({ ...formData, scheduled_date: `${currentDate}T${time}:00` });
                     }}
                     className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-blue-200 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all bg-white"
                   />
@@ -268,6 +266,18 @@ const BookService = () => {
               placeholder="Any specific requirements or issues..."
             />
           </div>
+
+          {/* Validation Summary */}
+          {(!formData.vehicle_id || !formData.service_id || !formData.scheduled_date) && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-800">
+              <p className="font-medium mb-1">Please complete all required fields:</p>
+              <ul className="list-disc list-inside">
+                {!formData.vehicle_id && <li>Select a vehicle</li>}
+                {!formData.service_id && <li>Select a service</li>}
+                {!formData.scheduled_date && <li>Select date and time</li>}
+              </ul>
+            </div>
+          )}
 
           <button
             type="submit"
