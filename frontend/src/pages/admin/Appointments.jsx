@@ -68,7 +68,8 @@ const Appointments = () => {
       ));
       setAssigningAppointment(null);
       setSelectedMechanicId(null);
-      setSuccessMessage(`Mechanic "${selectedMechanic?.name}" assigned to ${ids.length} service(s) successfully!`);
+      const action = assigningAppointment.mechanic ? 'changed to' : 'assigned to';
+      setSuccessMessage(`Mechanic "${selectedMechanic?.name}" ${action} ${ids.length} service(s) successfully!`);
       setTimeout(() => setSuccessMessage(''), 3000);
       fetchData();
     } catch (error) {
@@ -330,9 +331,9 @@ const Appointments = () => {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl w-full max-w-md p-6 animate-fade-in">
             <h2 className="text-xl font-bold text-gray-900 mb-4">
-              Assign Mechanic
+              {assigningAppointment.mechanic ? 'Change Mechanic' : 'Assign Mechanic'}
             </h2>
-            <div className="text-sm text-gray-500 mb-4">
+            <div className="text-sm text-gray-500 mb-2">
               <p className="font-medium text-gray-700 mb-1">Services for {assigningAppointment.user?.name}:</p>
               <div className="space-y-1">
                 {(assigningAppointment.services || [assigningAppointment.service]).map((svc, idx) => (
@@ -340,8 +341,15 @@ const Appointments = () => {
                 ))}
               </div>
             </div>
+            {assigningAppointment.mechanic && (
+              <p className="text-sm text-amber-600 mb-4">
+                Currently assigned: <strong>{assigningAppointment.mechanic.name}</strong>
+              </p>
+            )}
             <div className="space-y-2 max-h-64 overflow-y-auto mb-4">
-              {mechanics.map((mechanic) => (
+              {mechanics
+                .filter((m) => m.id !== assigningAppointment.mechanic?.id)
+                .map((mechanic) => (
                   <button
                     key={mechanic.id}
                     onClick={() => setSelectedMechanicId(mechanic.id)}
@@ -378,7 +386,7 @@ const Appointments = () => {
                 disabled={!selectedMechanicId}
                 className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Assign
+                {assigningAppointment.mechanic ? 'Change' : 'Assign'}
               </button>
             </div>
           </div>
