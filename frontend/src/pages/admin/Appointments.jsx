@@ -279,30 +279,24 @@ const Appointments = () => {
               </div>
             )}
 
-            {/* Mechanic Assignment */}
-            <div className="pt-4 border-t border-gray-100">
-              {appointment.mechanic ? (
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                      <Wrench className="w-4 h-4 text-green-600" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Assigned to</p>
-                      <p className="font-medium text-gray-900">{appointment.mechanic.name}</p>
-                    </div>
+            {/* Mechanic Info */}
+            {appointment.mechanic && (
+              <div className="pt-4 border-t border-gray-100">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                    <Wrench className="w-4 h-4 text-green-600" />
                   </div>
-                  <button
-                    onClick={() => {
-                      setAssigningAppointment(appointment);
-                      setSelectedMechanicId(null);
-                    }}
-                    className="text-sm text-blue-600 hover:text-blue-700 font-medium px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors"
-                  >
-                    Change
-                  </button>
+                  <div>
+                    <p className="text-sm text-gray-500">Assigned to</p>
+                    <p className="font-medium text-gray-900">{appointment.mechanic.name}</p>
+                  </div>
                 </div>
-              ) : (
+              </div>
+            )}
+
+            {/* Mechanic Assignment Button - Only show if no mechanic assigned yet */}
+            {!appointment.mechanic && (
+              <div className="pt-4 border-t border-gray-100">
                 <button
                   onClick={() => {
                     setAssigningAppointment(appointment);
@@ -313,8 +307,8 @@ const Appointments = () => {
                   <Wrench className="w-4 h-4" />
                   Assign Mechanic
                 </button>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         ))}
         </div>
@@ -325,9 +319,9 @@ const Appointments = () => {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl w-full max-w-md p-6 animate-fade-in">
             <h2 className="text-xl font-bold text-gray-900 mb-4">
-              {assigningAppointment.mechanic ? 'Change Mechanic' : 'Assign Mechanic'}
+              Assign Mechanic
             </h2>
-            <div className="text-sm text-gray-500 mb-2">
+            <div className="text-sm text-gray-500 mb-4">
               <p className="font-medium text-gray-700 mb-1">Services for {assigningAppointment.user?.name}:</p>
               <div className="space-y-1">
                 {(assigningAppointment.services || [assigningAppointment.service]).map((svc, idx) => (
@@ -335,15 +329,8 @@ const Appointments = () => {
                 ))}
               </div>
             </div>
-            {assigningAppointment.mechanic && (
-              <p className="text-sm text-amber-600 mb-4">
-                Currently assigned: <strong>{assigningAppointment.mechanic.name}</strong>
-              </p>
-            )}
             <div className="space-y-2 max-h-64 overflow-y-auto mb-4">
-              {mechanics
-                .filter((m) => m.id !== assigningAppointment.mechanic?.id)
-                .map((mechanic) => (
+              {mechanics.map((mechanic) => (
                   <button
                     key={mechanic.id}
                     onClick={() => setSelectedMechanicId(mechanic.id)}
@@ -380,7 +367,7 @@ const Appointments = () => {
                 disabled={!selectedMechanicId}
                 className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Submit
+                Assign
               </button>
             </div>
           </div>
