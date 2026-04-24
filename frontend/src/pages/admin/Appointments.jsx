@@ -156,7 +156,15 @@ const Appointments = () => {
                         <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
                           <Wrench className="w-3 h-3 text-blue-600" />
                         </div>
-                        <span className="text-sm text-gray-900">{appointment.mechanic.name}</span>
+                        <div>
+                          <span className="text-sm text-gray-900">{appointment.mechanic.name}</span>
+                          <button
+                            onClick={() => setAssigningAppointment(appointment)}
+                            className="block text-xs text-blue-600 hover:text-blue-700 mt-1"
+                          >
+                            Change Mechanic
+                          </button>
+                        </div>
                       </div>
                     ) : (
                       <button
@@ -194,30 +202,39 @@ const Appointments = () => {
         </div>
       </div>
 
-      {/* Assign Mechanic Modal */}
+      {/* Assign/Change Mechanic Modal */}
       {assigningAppointment && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl w-full max-w-md p-6 animate-fade-in">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Assign Mechanic</h2>
-            <p className="text-sm text-gray-500 mb-4">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">
+              {assigningAppointment.mechanic ? 'Change Mechanic' : 'Assign Mechanic'}
+            </h2>
+            <p className="text-sm text-gray-500 mb-2">
               Appointment: {assigningAppointment.service?.name} for {assigningAppointment.user?.name}
             </p>
+            {assigningAppointment.mechanic && (
+              <p className="text-sm text-amber-600 mb-4">
+                Currently assigned: <strong>{assigningAppointment.mechanic.name}</strong>
+              </p>
+            )}
             <div className="space-y-2 max-h-64 overflow-y-auto">
-              {mechanics.map((mechanic) => (
-                <button
-                  key={mechanic.id}
-                  onClick={() => handleAssign(assigningAppointment.id, mechanic.id)}
-                  className="w-full flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-colors text-left"
-                >
-                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                    <Wrench className="w-4 h-4 text-blue-600" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-900">{mechanic.name}</p>
-                    <p className="text-sm text-gray-500">{mechanic.email}</p>
-                  </div>
-                </button>
-              ))}
+              {mechanics
+                .filter((m) => m.id !== assigningAppointment.mechanic?.id)
+                .map((mechanic) => (
+                  <button
+                    key={mechanic.id}
+                    onClick={() => handleAssign(assigningAppointment.id, mechanic.id)}
+                    className="w-full flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-colors text-left"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                      <Wrench className="w-4 h-4 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">{mechanic.name}</p>
+                      <p className="text-sm text-gray-500">{mechanic.email}</p>
+                    </div>
+                  </button>
+                ))}
             </div>
             <button
               onClick={() => setAssigningAppointment(null)}
