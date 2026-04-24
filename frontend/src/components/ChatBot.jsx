@@ -20,6 +20,37 @@ const ChatBot = () => {
     scrollToBottom();
   }, [messages]);
 
+  // Fallback response generator for when API fails
+  const generateFallbackResponse = (userInput) => {
+    const input = userInput.toLowerCase();
+    
+    if (input.includes('appointment') || input.includes('schedule') || input.includes('book')) {
+      return "To schedule an appointment, go to the Appointment page, select your vehicle, choose a service, and pick your preferred date and time.";
+    }
+    if (input.includes('vehicle') || input.includes('car') || input.includes('add')) {
+      return "You can manage your vehicles in the 'My Vehicles' section. Click 'Add Vehicle' to register a new car.";
+    }
+    if (input.includes('service') || input.includes('price') || input.includes('cost')) {
+      return "We offer various services including maintenance, repairs, and inspections. Prices are shown when you select a service during booking.";
+    }
+    if (input.includes('status') || input.includes('progress') || input.includes('when')) {
+      return "Check your appointment status in the Dashboard or History page. You'll see if it's pending, in progress, or completed.";
+    }
+    if (input.includes('hello') || input.includes('hi') || input.includes('hey')) {
+      return "Hello! How can I help you today? I can assist with appointments, vehicles, services, and more.";
+    }
+    if (input.includes('help') || input.includes('how')) {
+      return "I'm here to help! I can assist you with:\n• Scheduling appointments\n• Managing vehicles\n• Service information\n• Checking appointment status\nWhat would you like to know?";
+    }
+    if (input.includes('contact') || input.includes('phone') || input.includes('email')) {
+      return "For direct assistance, please contact our garage directly or speak with the admin.";
+    }
+    if (input.includes('cancel') || input.includes('delete')) {
+      return "To cancel an appointment, please go to your Dashboard or History page and contact the admin for cancellation.";
+    }
+    return "I'm a basic assistant right now. For more detailed help, please contact the garage admin. I can help with basic questions about appointments, vehicles, and services.";
+  };
+
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
@@ -28,10 +59,19 @@ const ChatBot = () => {
     setInput('');
     setIsLoading(true);
 
+    // If no API key, use fallback immediately
+    if (!API_KEY) {
+      setTimeout(() => {
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: generateFallbackResponse(userMessage.content)
+        }]);
+        setIsLoading(false);
+      }, 500);
+      return;
+    }
+
     try {
-      if (!API_KEY) {
-        throw new Error('API key not configured');
-      }
 
       const response = await fetch('/openrouter/chat/completions', {
         method: 'POST',
@@ -71,9 +111,11 @@ const ChatBot = () => {
       }
     } catch (error) {
       console.error('Chat error:', error);
+      
+      // Use fallback response when API fails
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: `Error: ${error.message || 'Sorry, I\'m having trouble connecting right now. Please try again later.'}`
+        content: generateFallbackResponse(userMessage.content)
       }]);
     } finally {
       setIsLoading(false);
