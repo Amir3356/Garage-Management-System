@@ -10,8 +10,6 @@ const ChatBot = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
-  const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
-
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -20,13 +18,11 @@ const ChatBot = () => {
     scrollToBottom();
   }, [messages]);
 
-  // Intelligent response generator with better pattern matching
+  // Intelligent response generator
   const generateFallbackResponse = (userInput) => {
     const input = userInput.toLowerCase().trim();
     
-    console.log('User input:', input); // Debug log
-    
-    // Greetings - more variations
+    // Greetings
     if (input.match(/^(hi|hello|hey|good morning|good afternoon|good evening|howdy|greetings|sup|yo)[\s!?]*$/)) {
       const greetings = [
         "Hello! Welcome to our Garage Management System. How can I assist you today? 😊",
@@ -36,17 +32,17 @@ const ChatBot = () => {
       return greetings[Math.floor(Math.random() * greetings.length)];
     }
     
-    // How are you / conversational
+    // How are you
     if (input.match(/how are you|how're you|how r u|what's up|whats up|wassup/)) {
       return "I'm doing great, thanks for asking! 😊 I'm here and ready to help you with your garage needs. What can I assist you with today?";
     }
     
-    // What can you do / capabilities
+    // What can you do
     if (input.match(/what (can|do) you (do|help)|your (capabilities|features)|tell me about yourself/)) {
       return "I'm your Garage Management Assistant! I can help you with:\n\n📅 **Appointments** - Schedule, check status, or cancel\n🚗 **Vehicles** - Add, view, or manage your vehicles\n🔧 **Services** - Learn about repairs, maintenance, pricing\n📊 **Status Updates** - Track your service progress\n💬 **Questions** - Answer any garage-related queries\n\nWhat would you like to do?";
     }
     
-    // Appointment/Booking related - more intelligent
+    // Appointment related
     if (input.includes('appointment') || input.includes('book') || input.includes('schedule') || input.includes('reserve')) {
       if (input.includes('how') || input.includes('what') || input.includes('where') || input.includes('can i')) {
         return "**Booking an Appointment is Easy!** 📅\n\n1. Navigate to the 'Appointments' page\n2. Select your vehicle from the list\n3. Choose the service you need\n4. Pick your preferred date and time\n5. Submit your request\n\nThe admin will review and confirm your appointment. You'll see the status in your Dashboard!";
@@ -57,7 +53,7 @@ const ChatBot = () => {
       return "I can help you with appointments! Would you like to:\n• Learn how to book an appointment?\n• Check your appointment status?\n• Cancel or modify an appointment?\n\nJust let me know!";
     }
     
-    // Vehicle related - more context aware
+    // Vehicle related
     if (input.includes('vehicle') || input.includes('car') || input.includes('truck') || input.includes('motorcycle') || input.includes('bike') || input.includes('auto')) {
       if (input.includes('add') || input.includes('new') || input.includes('register') || input.includes('create')) {
         return "**Adding a New Vehicle** 🚗\n\n1. Go to 'My Vehicles' page\n2. Click the 'Add Vehicle' button\n3. Fill in the details:\n   • Vehicle name/model\n   • License plate number\n   • Any other relevant info\n4. Save your vehicle\n\nOnce added, you can use it to book appointments!";
@@ -71,232 +67,69 @@ const ChatBot = () => {
       return "I can help you manage your vehicles! You can:\n• Add a new vehicle\n• View all your vehicles\n• Edit vehicle information\n• Remove a vehicle\n\nWhat would you like to do?";
     }
     
-    // Service related - comprehensive
+    // Service related
     if (input.includes('service') || input.includes('repair') || input.includes('maintenance') || input.includes('fix') || input.includes('work') || input.includes('problem')) {
-      if (input.includes('price') || input.includes('cost') || input.includes('how much') || input.includes('fee') || input.includes('charge') || input.includes('expensive') || input.includes('cheap')) {
-        return "**Service Pricing** 💰\n\nPrices vary by service type. You can see exact pricing when booking an appointment:\n\n1. Go to Appointments page\n2. Select a service\n3. View the price before confirming\n\nWe believe in transparent pricing - no hidden fees! For specific quotes, you can also contact the garage directly.";
+      if (input.includes('price') || input.includes('cost') || input.includes('how much') || input.includes('fee') || input.includes('charge')) {
+        return "**Service Pricing** 💰\n\nPrices vary by service type. You can see exact pricing when booking an appointment:\n\n1. Go to Appointments page\n2. Select a service\n3. View the price before confirming\n\nWe believe in transparent pricing - no hidden fees!";
       }
       if (input.includes('what') || input.includes('which') || input.includes('types') || input.includes('kind') || input.includes('available') || input.includes('offer')) {
-        return "**Our Services** 🔧\n\nWe offer comprehensive vehicle services:\n\n• 🛢️ Oil changes & fluid checks\n• 🔩 Engine diagnostics & repairs\n• 🚗 Brake system services\n• 🛞 Tire services (rotation, replacement)\n• 🔍 General inspections\n• ⚙️ Transmission services\n• 🔋 Battery & electrical work\n• And much more!\n\nCheck the Appointments page for the complete list!";
-      }
-      if (input.includes('recommend') || input.includes('suggest') || input.includes('need') || input.includes('should')) {
-        return "**Service Recommendations:**\n\nFor the best advice on what your vehicle needs:\n\n1. Book an inspection appointment\n2. Our mechanics will assess your vehicle\n3. You'll get personalized recommendations\n\nRegular maintenance typically includes:\n• Oil changes every 3,000-5,000 miles\n• Tire rotation every 6,000-8,000 miles\n• Brake inspection annually\n\nWhat specific concerns do you have?";
+        return "**Our Services** 🔧\n\nWe offer comprehensive vehicle services:\n\n• 🛢️ Oil changes & fluid checks\n• 🔩 Engine diagnostics & repairs\n• 🚗 Brake system services\n• 🛞 Tire services\n• 🔍 General inspections\n• ⚙️ Transmission services\n• 🔋 Battery & electrical work\n\nCheck the Appointments page for the complete list!";
       }
       return "I can help with service information! Are you looking for:\n• Service types we offer?\n• Pricing information?\n• Service recommendations?\n• How to book a service?\n\nLet me know!";
     }
     
-    // Status related - detailed
-    if ((input.includes('status') || input.includes('progress') || input.includes('check') || input.includes('where') || input.includes('track')) && 
+    // Status related
+    if ((input.includes('status') || input.includes('progress') || input.includes('check') || input.includes('track')) && 
         (input.includes('appointment') || input.includes('service') || input.includes('car') || input.includes('vehicle'))) {
-      return "**Checking Your Appointment Status** 📊\n\n1. Go to your Dashboard or History page\n2. View all your appointments\n\n**Status Indicators:**\n🟡 **Pending** - Awaiting admin approval\n🔵 **In Progress** - Currently being worked on\n🟢 **Completed** - Service finished, ready for pickup\n🔴 **Cancelled** - Appointment was cancelled\n\nYou'll receive updates as your status changes!";
+      return "**Checking Your Appointment Status** 📊\n\n1. Go to your Dashboard or History page\n2. View all your appointments\n\n**Status Indicators:**\n🟡 **Pending** - Awaiting admin approval\n🔵 **In Progress** - Currently being worked on\n🟢 **Completed** - Service finished, ready for pickup\n🔴 **Cancelled** - Appointment was cancelled";
     }
     
     // Payment related
-    if (input.includes('pay') || input.includes('payment') || input.includes('invoice') || input.includes('bill') || input.includes('charge') || input.includes('credit card')) {
-      return "**Payment Information** 💳\n\nPayment details:\n• You'll receive an invoice after service completion\n• Check your Dashboard for invoices\n• Payment methods are handled by the garage\n• Contact the admin for specific payment questions\n\nNeed help with a specific invoice?";
+    if (input.includes('pay') || input.includes('payment') || input.includes('invoice') || input.includes('bill')) {
+      return "**Payment Information** 💳\n\nPayment details:\n• You'll receive an invoice after service completion\n• Check your Dashboard for invoices\n• Payment methods are handled by the garage\n• Contact the admin for specific payment questions";
     }
     
-    // Hours / Operating time
-    if (input.includes('hours') || input.includes('open') || input.includes('close') || input.includes('timing') || input.includes('operating')) {
-      return "**Operating Hours** 🕐\n\nFor our current operating hours and availability:\n• Check your Dashboard for contact information\n• Contact the garage directly\n• Hours may vary by location\n\nWhen booking an appointment, you'll see available time slots!";
+    // Hours
+    if (input.includes('hours') || input.includes('open') || input.includes('close') || input.includes('timing')) {
+      return "**Operating Hours** 🕐\n\nFor our current operating hours:\n• Check your Dashboard for contact information\n• Contact the garage directly\n• Hours may vary by location\n\nWhen booking an appointment, you'll see available time slots!";
     }
     
-    // Location / Address
-    if ((input.includes('location') || input.includes('address') || input.includes('where') || input.includes('directions') || input.includes('find')) && 
-        !input.includes('vehicle') && !input.includes('car')) {
-      return "**Garage Location** 📍\n\nFor location and directions:\n• Check your Dashboard for address details\n• Contact information is available in your account\n• The admin can provide specific directions\n\nNeed help finding us?";
+    // Contact
+    if (input.includes('contact') || input.includes('phone') || input.includes('email') || input.includes('call') || input.includes('reach')) {
+      return "**Contact Information** 📞\n\nTo reach the garage:\n• Check your Dashboard for contact details\n• Phone and email are available there\n• You can also message through the system\n• Visit in person during operating hours";
     }
     
-    // Emergency / Urgent
-    if (input.includes('emergency') || input.includes('urgent') || input.includes('asap') || input.includes('immediately') || input.includes('right now')) {
-      return "**Urgent Assistance** 🚨\n\nFor urgent matters:\n1. Contact the garage directly via phone\n2. Check your Dashboard for emergency contact info\n3. If it's a roadside emergency, call emergency services\n\nFor regular appointments, you can book through the system. Is this an emergency?";
-    }
-    
-    // Warranty / Guarantee
-    if (input.includes('warranty') || input.includes('guarantee') || input.includes('covered') || input.includes('insurance')) {
-      return "**Warranty & Guarantees** ✅\n\nFor warranty information:\n• Contact the garage admin directly\n• Warranty terms vary by service type\n• Keep your service receipts\n• Check your invoice for warranty details\n\nNeed specific warranty information?";
-    }
-    
-    // Parts
-    if (input.includes('parts') || input.includes('spare') || input.includes('component') || input.includes('replace')) {
-      return "**Parts & Replacements** 🔧\n\nFor parts information:\n• Parts are included in service pricing\n• Quality parts are used for all repairs\n• Specific part questions? Contact the admin\n• You can discuss part preferences during your appointment\n\nNeed information about a specific part?";
-    }
-    
-    // Contact related
-    if (input.includes('contact') || input.includes('phone') || input.includes('email') || input.includes('call') || input.includes('reach') || input.includes('talk') || input.includes('speak')) {
-      return "**Contact Information** 📞\n\nTo reach the garage:\n• Check your Dashboard for contact details\n• Phone and email are available there\n• You can also message through the system\n• Visit in person during operating hours\n\nHow would you like to get in touch?";
-    }
-    
-    // Time/Duration related
+    // Duration
     if (input.includes('how long') || input.includes('duration') || input.includes('take') || input.includes('wait') || input.includes('time')) {
-      return "**Service Duration** ⏱️\n\nTypical service times:\n• Oil change: 30-45 minutes\n• Basic maintenance: 30-60 minutes\n• Brake service: 1-2 hours\n• Major repairs: 2-4+ hours\n• Diagnostics: 30-90 minutes\n\nExact duration depends on:\n• Service type\n• Vehicle condition\n• Parts availability\n\nYou'll get an estimate when booking!";
+      return "**Service Duration** ⏱️\n\nTypical service times:\n• Oil change: 30-45 minutes\n• Basic maintenance: 30-60 minutes\n• Brake service: 1-2 hours\n• Major repairs: 2-4+ hours\n\nYou'll get an estimate when booking!";
     }
     
     // Thank you
-    if (input.includes('thank') || input.includes('thanks') || input.includes('thx') || input.includes('appreciate')) {
-      const responses = [
-        "You're very welcome! 😊 Happy to help anytime!",
-        "My pleasure! Let me know if you need anything else!",
-        "Glad I could help! Feel free to ask if you have more questions!"
-      ];
-      return responses[Math.floor(Math.random() * responses.length)];
+    if (input.includes('thank') || input.includes('thanks')) {
+      return "You're very welcome! 😊 Happy to help anytime!";
     }
     
     // Goodbye
-    if (input.includes('bye') || input.includes('goodbye') || input.includes('see you') || input.includes('later') || input.includes('exit') || input.includes('quit')) {
-      return "Goodbye! 👋 Feel free to come back anytime you need help with your vehicle services. Drive safe!";
+    if (input.includes('bye') || input.includes('goodbye') || input.includes('see you')) {
+      return "Goodbye! 👋 Feel free to come back anytime you need help. Drive safe!";
     }
     
     // Help
     if (input.includes('help')) {
-      return "I'm here to help! I can assist you with:\n\n📅 **Appointments** - Booking, checking status, modifications\n🚗 **Vehicles** - Adding, viewing, managing your vehicles\n🔧 **Services** - Types, pricing, recommendations\n📊 **Status** - Tracking your service progress\n💳 **Payments** - Invoice and payment information\n📞 **Contact** - Getting in touch with the garage\n\nWhat do you need help with?";
+      return "I'm here to help! I can assist you with:\n\n📅 **Appointments** - Booking, checking status, modifications\n🚗 **Vehicles** - Adding, viewing, managing\n🔧 **Services** - Types, pricing, recommendations\n📊 **Status** - Tracking your service progress\n💳 **Payments** - Invoice information\n📞 **Contact** - Getting in touch\n\nWhat do you need help with?";
     }
     
-    // Check if question is garage-related
+    // Check if garage-related
     const garageKeywords = ['garage', 'appointment', 'vehicle', 'car', 'service', 'repair', 'maintenance', 
-                           'booking', 'schedule', 'mechanic', 'oil', 'tire', 'brake', 'engine', 'inspection',
-                           'dashboard', 'admin', 'invoice', 'history'];
+                           'booking', 'schedule', 'mechanic', 'oil', 'tire', 'brake', 'engine', 'inspection'];
     const isGarageRelated = garageKeywords.some(keyword => input.includes(keyword));
     
     if (isGarageRelated) {
-      return "I'd be happy to help with that! Could you provide a bit more detail? I can assist with:\n\n📅 Booking & managing appointments\n🚗 Vehicle management\n🔧 Service information & pricing\n📊 Checking appointment status\n💬 General garage questions\n\nWhat specifically would you like to know?";
+      return "I'd be happy to help with that! Could you provide more details? I can assist with:\n\n📅 Booking & managing appointments\n🚗 Vehicle management\n🔧 Service information & pricing\n📊 Checking appointment status\n\nWhat specifically would you like to know?";
     }
     
-    // For non-garage questions, be polite but redirect
-    return "I'm specialized in helping with garage and vehicle services. While I can't answer that particular question, I'm excellent at helping with:\n\n📅 **Appointments** - Scheduling and management\n🚗 **Vehicles** - Adding and tracking your vehicles\n🔧 **Services** - Information about repairs and maintenance\n📊 **Status** - Tracking your service progress\n\nHow can I help with your vehicle needs today?";
-  };
-    
-    // Greetings - more variations
-    if (input.match(/^(hi|hello|hey|good morning|good afternoon|good evening|howdy|greetings|sup|yo)[\s!?]*$/)) {
-      const greetings = [
-        "Hello! Welcome to our Garage Management System. How can I assist you today? 😊",
-        "Hi there! I'm here to help with your vehicle service needs. What can I do for you?",
-        "Hey! Ready to help you with appointments, vehicles, or services. What do you need?"
-      ];
-      return greetings[Math.floor(Math.random() * greetings.length)];
-    }
-    
-    // How are you / conversational
-    if (input.match(/how are you|how're you|how r u|what's up|whats up|wassup/)) {
-      return "I'm doing great, thanks for asking! 😊 I'm here and ready to help you with your garage needs. What can I assist you with today?";
-    }
-    
-    // What can you do / capabilities
-    if (input.match(/what (can|do) you (do|help)|your (capabilities|features)|tell me about yourself/)) {
-      return "I'm your Garage Management Assistant! I can help you with:\n\n📅 **Appointments** - Schedule, check status, or cancel\n🚗 **Vehicles** - Add, view, or manage your vehicles\n🔧 **Services** - Learn about repairs, maintenance, pricing\n📊 **Status Updates** - Track your service progress\n💬 **Questions** - Answer any garage-related queries\n\nWhat would you like to do?";
-    }
-    
-    // Appointment/Booking related - more intelligent
-    if (input.match(/\b(appointment|book|schedule|reserve|make.*appointment|need.*appointment)\b/)) {
-      if (input.match(/\b(how|what|where|can i|do i)\b/)) {
-        return "**Booking an Appointment is Easy!** 📅\n\n1. Navigate to the 'Appointments' page\n2. Select your vehicle from the list\n3. Choose the service you need\n4. Pick your preferred date and time\n5. Submit your request\n\nThe admin will review and confirm your appointment. You'll see the status in your Dashboard!";
-      }
-      if (input.match(/\b(cancel|change|modify|reschedule)\b/)) {
-        return "**To modify your appointment:**\n\n1. Go to your Dashboard or History page\n2. Find the appointment you want to change\n3. Contact the admin for modifications\n\n💡 **Tip:** Try to make changes at least 24 hours in advance!";
-      }
-      return "I can help you with appointments! Would you like to:\n• Learn how to book an appointment?\n• Check your appointment status?\n• Cancel or modify an appointment?\n\nJust let me know!";
-    }
-    
-    // Vehicle related - more context aware
-    if (input.match(/\b(vehicle|car|truck|motorcycle|bike|auto)\b/)) {
-      if (input.match(/\b(add|new|register|create)\b/)) {
-        return "**Adding a New Vehicle** 🚗\n\n1. Go to 'My Vehicles' page\n2. Click the 'Add Vehicle' button\n3. Fill in the details:\n   • Vehicle name/model\n   • License plate number\n   • Any other relevant info\n4. Save your vehicle\n\nOnce added, you can use it to book appointments!";
-      }
-      if (input.match(/\b(edit|update|change|modify)\b/)) {
-        return "**Updating Vehicle Information:**\n\n1. Navigate to 'My Vehicles'\n2. Find the vehicle you want to update\n3. Click the edit button\n4. Make your changes\n5. Save\n\nYou can update vehicle details anytime!";
-      }
-      if (input.match(/\b(delete|remove)\b/)) {
-        return "**Removing a Vehicle:**\n\n1. Go to 'My Vehicles' page\n2. Find the vehicle you want to remove\n3. Click the delete/remove option\n\n⚠️ **Note:** Make sure you don't have any pending appointments for that vehicle!";
-      }
-      return "I can help you manage your vehicles! You can:\n• Add a new vehicle\n• View all your vehicles\n• Edit vehicle information\n• Remove a vehicle\n\nWhat would you like to do?";
-    }
-    
-    // Service related - comprehensive
-    if (input.match(/\b(service|repair|maintenance|fix|work|problem)\b/)) {
-      if (input.match(/\b(price|cost|how much|fee|charge|expensive|cheap)\b/)) {
-        return "**Service Pricing** 💰\n\nPrices vary by service type. You can see exact pricing when booking an appointment:\n\n1. Go to Appointments page\n2. Select a service\n3. View the price before confirming\n\nWe believe in transparent pricing - no hidden fees! For specific quotes, you can also contact the garage directly.";
-      }
-      if (input.match(/\b(what|which|types|kind|available|offer)\b/)) {
-        return "**Our Services** 🔧\n\nWe offer comprehensive vehicle services:\n\n• 🛢️ Oil changes & fluid checks\n• 🔩 Engine diagnostics & repairs\n• 🚗 Brake system services\n• 🛞 Tire services (rotation, replacement)\n• 🔍 General inspections\n• ⚙️ Transmission services\n• 🔋 Battery & electrical work\n• And much more!\n\nCheck the Appointments page for the complete list!";
-      }
-      if (input.match(/\b(recommend|suggest|need|should)\b/)) {
-        return "**Service Recommendations:**\n\nFor the best advice on what your vehicle needs:\n\n1. Book an inspection appointment\n2. Our mechanics will assess your vehicle\n3. You'll get personalized recommendations\n\nRegular maintenance typically includes:\n• Oil changes every 3,000-5,000 miles\n• Tire rotation every 6,000-8,000 miles\n• Brake inspection annually\n\nWhat specific concerns do you have?";
-      }
-      return "I can help with service information! Are you looking for:\n• Service types we offer?\n• Pricing information?\n• Service recommendations?\n• How to book a service?\n\nLet me know!";
-    }
-    
-    // Status related - detailed
-    if (input.match(/\b(status|progress|check|where|track)\b/) && input.match(/\b(appointment|service|car|vehicle)\b/)) {
-      return "**Checking Your Appointment Status** 📊\n\n1. Go to your Dashboard or History page\n2. View all your appointments\n\n**Status Indicators:**\n🟡 **Pending** - Awaiting admin approval\n🔵 **In Progress** - Currently being worked on\n🟢 **Completed** - Service finished, ready for pickup\n🔴 **Cancelled** - Appointment was cancelled\n\nYou'll receive updates as your status changes!";
-    }
-    
-    // Payment related
-    if (input.match(/\b(pay|payment|invoice|bill|charge|credit card)\b/)) {
-      return "**Payment Information** 💳\n\nPayment details:\n• You'll receive an invoice after service completion\n• Check your Dashboard for invoices\n• Payment methods are handled by the garage\n• Contact the admin for specific payment questions\n\nNeed help with a specific invoice?";
-    }
-    
-    // Hours / Operating time
-    if (input.match(/\b(hours|open|close|timing|when.*open|operating)\b/)) {
-      return "**Operating Hours** 🕐\n\nFor our current operating hours and availability:\n• Check your Dashboard for contact information\n• Contact the garage directly\n• Hours may vary by location\n\nWhen booking an appointment, you'll see available time slots!";
-    }
-    
-    // Location / Address
-    if (input.match(/\b(location|address|where|directions|find)\b/) && !input.match(/\b(vehicle|car)\b/)) {
-      return "**Garage Location** 📍\n\nFor location and directions:\n• Check your Dashboard for address details\n• Contact information is available in your account\n• The admin can provide specific directions\n\nNeed help finding us?";
-    }
-    
-    // Emergency / Urgent
-    if (input.match(/\b(emergency|urgent|asap|immediately|right now|help)\b/)) {
-      return "**Urgent Assistance** 🚨\n\nFor urgent matters:\n1. Contact the garage directly via phone\n2. Check your Dashboard for emergency contact info\n3. If it's a roadside emergency, call emergency services\n\nFor regular appointments, you can book through the system. Is this an emergency?";
-    }
-    
-    // Warranty / Guarantee
-    if (input.match(/\b(warranty|guarantee|covered|insurance)\b/)) {
-      return "**Warranty & Guarantees** ✅\n\nFor warranty information:\n• Contact the garage admin directly\n• Warranty terms vary by service type\n• Keep your service receipts\n• Check your invoice for warranty details\n\nNeed specific warranty information?";
-    }
-    
-    // Parts
-    if (input.match(/\b(parts|spare|component|replace)\b/)) {
-      return "**Parts & Replacements** 🔧\n\nFor parts information:\n• Parts are included in service pricing\n• Quality parts are used for all repairs\n• Specific part questions? Contact the admin\n• You can discuss part preferences during your appointment\n\nNeed information about a specific part?";
-    }
-    
-    // Contact related
-    if (input.match(/\b(contact|phone|email|call|reach|talk|speak)\b/)) {
-      return "**Contact Information** 📞\n\nTo reach the garage:\n• Check your Dashboard for contact details\n• Phone and email are available there\n• You can also message through the system\n• Visit in person during operating hours\n\nHow would you like to get in touch?";
-    }
-    
-    // Time/Duration related
-    if (input.match(/\b(how long|duration|take|wait|time)\b/)) {
-      return "**Service Duration** ⏱️\n\nTypical service times:\n• Oil change: 30-45 minutes\n• Basic maintenance: 30-60 minutes\n• Brake service: 1-2 hours\n• Major repairs: 2-4+ hours\n• Diagnostics: 30-90 minutes\n\nExact duration depends on:\n• Service type\n• Vehicle condition\n• Parts availability\n\nYou'll get an estimate when booking!";
-    }
-    
-    // Thank you
-    if (input.match(/\b(thank|thanks|thx|appreciate)\b/)) {
-      const responses = [
-        "You're very welcome! 😊 Happy to help anytime!",
-        "My pleasure! Let me know if you need anything else!",
-        "Glad I could help! Feel free to ask if you have more questions!"
-      ];
-      return responses[Math.floor(Math.random() * responses.length)];
-    }
-    
-    // Goodbye
-    if (input.match(/\b(bye|goodbye|see you|later|exit|quit)\b/)) {
-      return "Goodbye! 👋 Feel free to come back anytime you need help with your vehicle services. Drive safe!";
-    }
-    
-    // Check if question is garage-related
-    const garageKeywords = ['garage', 'appointment', 'vehicle', 'car', 'service', 'repair', 'maintenance', 
-                           'booking', 'schedule', 'mechanic', 'oil', 'tire', 'brake', 'engine', 'inspection',
-                           'dashboard', 'admin', 'invoice', 'history'];
-    const isGarageRelated = garageKeywords.some(keyword => input.includes(keyword));
-    
-    if (isGarageRelated) {
-      return "I'd be happy to help with that! Could you provide a bit more detail? I can assist with:\n\n📅 Booking & managing appointments\n🚗 Vehicle management\n🔧 Service information & pricing\n📊 Checking appointment status\n💬 General garage questions\n\nWhat specifically would you like to know?";
-    }
-    
-    // For non-garage questions, be polite but redirect
-    return "I'm specialized in helping with garage and vehicle services. While I can't answer that particular question, I'm excellent at helping with:\n\n📅 **Appointments** - Scheduling and management\n🚗 **Vehicles** - Adding and tracking your vehicles\n🔧 **Services** - Information about repairs and maintenance\n📊 **Status** - Tracking your service progress\n\nHow can I help with your vehicle needs today?";
+    // Default response
+    return "I'm specialized in helping with garage and vehicle services. I'm excellent at helping with:\n\n📅 **Appointments** - Scheduling and management\n🚗 **Vehicles** - Adding and tracking your vehicles\n🔧 **Services** - Information about repairs and maintenance\n📊 **Status** - Tracking your service progress\n\nHow can I help with your vehicle needs today?";
   };
 
   const handleSend = async () => {
@@ -307,7 +140,6 @@ const ChatBot = () => {
     setInput('');
     setIsLoading(true);
 
-    // Use intelligent local responses (API disabled due to rate limits/credits)
     setTimeout(() => {
       setMessages(prev => [...prev, {
         role: 'assistant',
@@ -326,7 +158,6 @@ const ChatBot = () => {
 
   return (
     <>
-      {/* Floating Button */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
@@ -337,10 +168,8 @@ const ChatBot = () => {
         </button>
       )}
 
-      {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 w-96 h-[500px] bg-white rounded-2xl shadow-2xl flex flex-col z-50 animate-fade-in border border-gray-200">
-          {/* Header */}
+        <div className="fixed bottom-6 right-6 w-96 h-[500px] bg-white rounded-2xl shadow-2xl flex flex-col z-50 border border-gray-200">
           <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-t-2xl">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
@@ -359,7 +188,6 @@ const ChatBot = () => {
             </button>
           </div>
 
-          {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
             {messages.map((message, index) => (
               <div
@@ -375,7 +203,7 @@ const ChatBot = () => {
                     <Bot className="w-4 h-4 text-gray-600" />
                   )}
                 </div>
-                <div className={`max-w-[75%] px-3 py-2 rounded-2xl text-sm ${
+                <div className={`max-w-[75%] px-3 py-2 rounded-2xl text-sm whitespace-pre-line ${
                   message.role === 'user'
                     ? 'bg-blue-600 text-white rounded-br-md'
                     : 'bg-white text-gray-800 shadow-sm rounded-bl-md border border-gray-100'
@@ -401,7 +229,6 @@ const ChatBot = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
           <div className="p-3 bg-white border-t border-gray-100 rounded-b-2xl">
             <div className="flex gap-2">
               <input
