@@ -136,12 +136,12 @@ const BookService = () => {
                   cyan: { bg: 'bg-cyan-50', text: 'text-cyan-600', border: 'border-cyan-200', hover: 'hover:border-cyan-400', ring: 'ring-cyan-500', selectedBg: 'bg-cyan-50' },
                 }[color];
 
-                const isSelected = formData.service_id === service.id;
+                const isSelected = formData.service_ids?.includes(service.id);
 
                 return (
                   <div
                     key={service.id}
-                    onClick={() => setFormData({ ...formData, service_id: service.id })}
+                    onClick={() => toggleService(service.id)}
                     className={`group relative p-5 rounded-2xl border-2 text-left transition-all duration-300 ease-out cursor-pointer ${
                       isSelected
                         ? `${colorClasses.border} ${colorClasses.selectedBg} shadow-lg ring-2 ${colorClasses.ring} ring-offset-2`
@@ -172,18 +172,24 @@ const BookService = () => {
                           {service.description}
                         </p>
 
-                        {/* Price, Duration & View Details */}
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-sm font-bold ${colorClasses.bg} ${colorClasses.text}`}>
-                              ${service.price}
+                      {/* Price, Duration & View Details */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-sm font-bold ${colorClasses.bg} ${colorClasses.text}`}>
+                            ${service.price}
+                          </span>
+                          {isSelected && (
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${colorClasses.bg} ${colorClasses.text}`}>
+                              <CheckCircle className="w-3 h-3 mr-1" />
+                              Selected
                             </span>
-                            {service.duration_minutes && (
-                              <span className="inline-flex items-center gap-1 text-xs text-gray-400">
-                                <Clock className="w-3.5 h-3.5" />
-                                {service.duration_minutes} min
-                              </span>
-                            )}
+                          )}
+                        {service.duration_minutes && (
+                          <span className="inline-flex items-center gap-1 text-xs text-gray-400">
+                            <Clock className="w-3.5 h-3.5" />
+                            {service.duration_minutes} min
+                          </span>
+                        )}
                           </div>
                           {/* View Details Button */}
                           <button
