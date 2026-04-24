@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
 import Loader from '../../components/Loader';
-import { Plus, Trash2, Edit2, User, Wrench, Shield, Power, PowerOff } from 'lucide-react';
+import { Plus, Trash2, Edit2, User, Shield, Power, PowerOff } from 'lucide-react';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
-  const [mechanics, setMechanics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -24,12 +23,8 @@ const Users = () => {
 
   const fetchUsers = async () => {
     try {
-      const [usersRes, mechanicsRes] = await Promise.all([
-        api.get('/users'),
-        api.get('/users/mechanics'),
-      ]);
+      const usersRes = await api.get('/users');
       setUsers(usersRes.data);
-      setMechanics(mechanicsRes.data);
     } catch (error) {
       console.error('Error fetching users:', error);
     } finally {
@@ -227,29 +222,6 @@ const Users = () => {
               ))}
             </tbody>
           </table>
-        </div>
-      </div>
-
-      {/* Mechanics Section */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">
-          Available Mechanics ({mechanics.length})
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {mechanics.map((mechanic) => (
-            <div
-              key={mechanic.id}
-              className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg"
-            >
-              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                <Wrench className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="font-medium text-gray-900">{mechanic.name}</p>
-                <p className="text-sm text-gray-500">{mechanic.email}</p>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
 
