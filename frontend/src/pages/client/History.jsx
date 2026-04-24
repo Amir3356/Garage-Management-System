@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
+import { Trash2 } from 'lucide-react';
 
 const History = () => {
   const [appointments, setAppointments] = useState([]);
@@ -32,6 +33,16 @@ const History = () => {
     return styles[status] || 'bg-gray-100 text-gray-700';
   };
 
+  const handleDelete = async (id) => {
+    if (!confirm('Are you sure you want to delete this appointment?')) return;
+    try {
+      await api.delete(`/appointments/${id}`);
+      setAppointments(appointments.filter((apt) => apt.id !== id));
+    } catch (error) {
+      alert('Error deleting appointment');
+    }
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -61,16 +72,19 @@ const History = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                   Mechanic
                 </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {loading ? (
                 <tr>
-                  <td colSpan="6" className="px-6 py-8"></td>
+                  <td colSpan="7" className="px-6 py-8"></td>
                 </tr>
               ) : appointments.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan="7" className="px-6 py-8 text-center text-gray-500">
                     No appointments found
                   </td>
                 </tr>
@@ -110,6 +124,15 @@ const History = () => {
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500">
                       {appointment.mechanic?.name || 'Not assigned'}
+                    </td>
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => handleDelete(appointment.id)}
+                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Delete Appointment"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </td>
                   </tr>
                 ))
